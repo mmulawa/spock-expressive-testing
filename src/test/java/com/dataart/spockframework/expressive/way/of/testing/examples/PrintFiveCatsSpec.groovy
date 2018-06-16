@@ -1,4 +1,4 @@
-package com.dataart.spockframework.expressiwe.way.of.testsing.examples
+package com.dataart.spockframework.expressive.way.of.testing.examples
 
 import org.junit.Rule
 import org.springframework.boot.test.rule.OutputCapture

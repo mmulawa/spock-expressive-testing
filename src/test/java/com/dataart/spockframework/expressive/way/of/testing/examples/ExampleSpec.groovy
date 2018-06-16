@@ -1,4 +1,4 @@
-package com.dataart.spockframework.expressiwe.way.of.testsing.examples
+package com.dataart.spockframework.expressive.way.of.testing.examples
 
 import spock.lang.Specification
 

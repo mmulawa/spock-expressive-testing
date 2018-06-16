@@ -1,4 +1,4 @@
-package com.dataart.spockframework.expressiwe.way.of.testsing.examples;
+package com.dataart.spockframework.expressive.way.of.testing.examples;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
