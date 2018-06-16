@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>examples</name>
-    <description>Spock Framework:Experssive way of testing presentation examples</description>
+    <description>Spock Framework: Expressive way of testing presentation examples</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
