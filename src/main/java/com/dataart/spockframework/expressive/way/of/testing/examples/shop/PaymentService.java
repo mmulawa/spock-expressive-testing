@@ -17,13 +17,13 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    public Payment payForOrder(Order order) {
+    public UUID payForOrder(Order order) {
         PaymentStatus status = (isUnderage(order.getCustomer()) && order.getPaymentType().equals(PaymentType.CARD))
                 ? PaymentStatus.REJECTED : PaymentStatus.ACCEPTED;
         Payment payment = new Payment(order.getPrice(), status, order.getPaymentType());
         UUID paymentId = paymentRepository.save(payment);
         order.setPaymentId(paymentId);
-        return payment;
+        return paymentId;
     }
 
     private Boolean isUnderage(Customer customer) {

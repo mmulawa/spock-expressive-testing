@@ -29,10 +29,9 @@ class PaymentServiceSpec extends Specification {
             PaymentService paymentService = new PaymentService(repository)
             Order order = getOrderMap() << [paymentType: paymentType]
         when:
-            Payment payment = paymentService.payForOrder(order)
+            UUID id = paymentService.payForOrder(order)
         then:
-            payment.status == ACCEPTED
-            1* repository.save(new Payment(100, ACCEPTED, paymentType))
+            1 * repository.save(new Payment(100, ACCEPTED, paymentType))
         where:
             paymentType << PaymentType.findAll()
     }
@@ -40,14 +39,11 @@ class PaymentServiceSpec extends Specification {
     @Unroll
     def "should pay for order with #paymentType and store payment in repository"() {
         given:
-            PaymentRepository paymentRepository = new InMemoryPaymentRepository()
-            PaymentService paymentService = new PaymentService(paymentRepository)
             Order order = getOrderMap() << [paymentType: paymentType]
         when:
-            Payment payment = paymentService.payForOrder(order)
+            UUID id = paymentService.payForOrder(order)
         then:
-            payment.status == ACCEPTED
-            paymentRepository.find(order.paymentId) == payment
+            repository.find(id).status == ACCEPTED
         where:
             paymentType << PaymentType.findAll()
     }
@@ -57,10 +53,9 @@ class PaymentServiceSpec extends Specification {
         given:
             Order order = orderMap
         when:
-            Payment payment = paymentService.payForOrder(order)
+            UUID id = paymentService.payForOrder(order)
         then:
-            payment.status == ACCEPTED
-            repository.find(order.paymentId).type == order.paymentType
+            repository.find(id).status == ACCEPTED
         where:
             orderMap                             | _
             getOrderMap() << [paymentType: CASH] | _
@@ -79,9 +74,9 @@ class PaymentServiceSpec extends Specification {
                     items   : [itemMap() << [category: MEDICINES]]
             ]
         when:
-            Payment payment = paymentService.payForOrder(order)
+            UUID id = paymentService.payForOrder(order)
         then:
-            payment.status == REJECTED
+            repository.find(id).status == REJECTED
     }
 
     @Unroll
@@ -94,9 +89,9 @@ class PaymentServiceSpec extends Specification {
                     items   : [itemMap() << [category: MEDICINES]]
             ]
         when:
-            Payment payment = paymentService.payForOrder(order)
+            UUID id = paymentService.payForOrder(order)
         then:
-            payment.status == expectedStatus
+            repository.find(id).status == expectedStatus
         where:
             dateOfBirth || expectedStatus
             KID_DOB     || REJECTED
