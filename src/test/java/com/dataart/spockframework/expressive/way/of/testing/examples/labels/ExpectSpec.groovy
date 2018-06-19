@@ -25,6 +25,5 @@ class ExpectSpec extends Specification {
             'name'
             def anotherClosure = { '' }
             !anotherClosure()
-
     }
 }

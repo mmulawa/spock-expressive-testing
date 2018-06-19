@@ -71,7 +71,7 @@ class PaymentServiceSpec extends Specification {
                     customer: customerMap << [
                             dateOfBirth: KID_DOB
                     ],
-                    items   : [itemMap() << [category: MEDICINES]]
+                    items   : [itemMap << [category: MEDICINES]]
             ]
         when:
             UUID id = paymentService.payForOrder(order)
@@ -86,7 +86,7 @@ class PaymentServiceSpec extends Specification {
                     customer: customerMap << [
                             dateOfBirth: dateOfBirth
                     ],
-                    items   : [itemMap() << [category: MEDICINES]]
+                    items   : [getItemMap() << [category: MEDICINES]]
             ]
         when:
             UUID id = paymentService.payForOrder(order)
@@ -105,7 +105,7 @@ class PaymentServiceSpec extends Specification {
                 customer       : getCustomerMap(),
                 shipmentAddress: getAddressMap(),
                 items          : [
-                        itemMap()
+                        getItemMap()
                 ],
                 price          : 100,
                 paymentType    : CARD
@@ -133,7 +133,7 @@ class PaymentServiceSpec extends Specification {
         ]
     }
 
-    private Map itemMap() {
+    private Map getItemMap() {
         [
                 category: FOOD,
                 name    : 'Item name',
