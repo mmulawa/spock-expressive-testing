@@ -22,6 +22,124 @@ class PaymentServiceSpec extends Specification {
     PaymentRepository repository = new InMemoryPaymentRepository()
     PaymentService paymentService = new PaymentService(repository)
 
+    def "should verify mock"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            PaymentService paymentService = new PaymentService(repository)
+            Order order = orderMap
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            1 * repository.save(_ as Payment)
+    }
+
+    def "should verify mock parameter"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            PaymentService paymentService = new PaymentService(repository)
+            Order order = orderMap
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            1 * repository.save(_ as Payment) >> { it ->
+                assert it[0].status == ACCEPTED
+            }
+    }
+
+    def "should stub return value"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            def uuid = UUID.randomUUID()
+            repository.save(_ as Payment) >> uuid
+            PaymentService paymentService = new PaymentService(repository)
+            Order order = orderMap
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            id == uuid
+    }
+
+    def "should stub with different value per invocaion"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            def blikPayment = new Payment(200, ACCEPTED, BLIK)
+            repository.find(_ as UUID) >> blikPayment >> null >> {
+                throw new RuntimeException("data source exception")
+            }
+        when:
+            def first = repository.find(UUID.randomUUID())
+            def second = repository.find(UUID.randomUUID())
+        then:
+            first == blikPayment
+            second == null
+        when:
+            repository.find(UUID.randomUUID())
+        then:
+            thrown RuntimeException
+    }
+
+    def "should not throw exception"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+        when:
+            repository.find(UUID.randomUUID())
+        then:
+            noExceptionThrown()
+    }
+
+    def "should throw exception"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            repository.find(_ as UUID) >> {
+                throw new RuntimeException("data source exception")
+            }
+        when:
+            repository.find(UUID.randomUUID())
+        then:
+            thrown()
+    }
+
+    def "should throw concrete exception"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            repository.find(_ as UUID) >> {
+                throw new RuntimeException("data source exception")
+            }
+        when:
+            repository.find(UUID.randomUUID())
+        then:
+            thrown(RuntimeException)
+    }
+
+    def "should verify thrown exception"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            repository.find(_ as UUID) >> {
+                throw new RuntimeException("data source exception")
+            }
+        when:
+            repository.find(UUID.randomUUID())
+        then:
+            def ex = thrown(RuntimeException)
+            ex.message == "data source exception"
+    }
+
+    def "should stub and verify repository mock"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            PaymentService paymentService = new PaymentService(repository)
+            Order order = orderMap
+            def uuid = UUID.randomUUID()
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            1 * repository.save(_ as Payment) >> { it ->
+                assert it[0].status == ACCEPTED
+                uuid
+            }
+            id == uuid
+    }
+
     @Unroll
     def "should pay for order with #paymentType and store payment in repository"(PaymentType paymentType) {
         given:

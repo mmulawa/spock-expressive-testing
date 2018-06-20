@@ -11,7 +11,7 @@ import static com.dataart.spockframework.expressive.way.of.testing.examples.shop
 class MapConstructorSpec extends Specification {
 
 
-    def 'should construct order and items from given map'() {
+    def 'should construct order and items of given map'() {
         given:
             def map = [items: [[
                                        category: FOOD,

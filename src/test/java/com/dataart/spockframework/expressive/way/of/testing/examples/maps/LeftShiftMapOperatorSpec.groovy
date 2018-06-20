@@ -16,7 +16,7 @@ class LeftShiftMapOperatorSpec extends Specification {
         when:
             map << [name: 'knife']
         then:
-            map.name == 'knife'
+            map.name == 'knifesss'
     }
 
     def 'should modify items map with << operator'() {
