@@ -1,4 +1,4 @@
-package com.dataart.spockframework.expressive.way.of.testing.examples
+package com.dataart.spockframework.expressive.way.of.testing.examples.valueRecording
 
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Item
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.ItemCategory

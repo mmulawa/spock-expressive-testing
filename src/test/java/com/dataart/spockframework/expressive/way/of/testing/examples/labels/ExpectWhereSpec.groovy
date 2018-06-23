@@ -6,14 +6,14 @@ import spock.lang.Unroll;
 public class ExpectWhereSpec extends Specification {
 
     @Unroll
-    def 'should check if #dynamicTypedBooleanVariable is #dynamicTypedBooleanVariable'() {
+    def 'should check if #variable is #variable'() {
         expect: 'true is true'
             true
         and: 'false is false'
             !false
         and:
-            dynamicTypedBooleanVariable == dynamicTypedBooleanVariable
+            variable == variable
         where:
-            dynamicTypedBooleanVariable << [true, false]
+            variable << [true, false]
     }
 }

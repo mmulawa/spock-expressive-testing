@@ -1,4 +1,4 @@
-package com.dataart.spockframework.expressive.way.of.testing.examples
+package com.dataart.spockframework.expressive.way.of.testing.examples.unicode
 
 import groovy.util.logging.Slf4j
 import org.junit.Rule
