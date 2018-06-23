@@ -23,7 +23,27 @@ class DummyDataSeparation extends Specification implements OrderData {
     PaymentRepository repository = new InMemoryPaymentRepository()
     PaymentService paymentService = new PaymentService(repository)
 
-    def "should not allow to pay for medicines to kid"() {
+    def "should not sell drugs to the kids #1"() {
+        given:
+            def order = [customer: [firstName  : 'Jan',
+                                    lastName   : 'Kowalski',
+                                    dateOfBirth: LocalDate.now().minusYears(10),
+                                    address    : [country     : 'POL',
+                                                  province    : 'lubelskie',
+                                                  city        : 'Lublin',
+                                                  street      : 'Królewska',
+                                                  streetNumber: '5A']],
+                         items   : [[category: MEDICINES,
+                                     name    : 'Aspirin',
+                                     price   : 100]] as Item[],
+                         price   : 100] as Order
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            repository.find(id).status == REJECTED
+    }
+
+    def "should not sell drugs to the kids #2"() {
         given:
             def order = getOrder(
                     customer: getCustomer(dateOfBirth: KID_DOB),
@@ -36,7 +56,7 @@ class DummyDataSeparation extends Specification implements OrderData {
     }
 
     @Unroll
-    def "should #result to pay for medicines to #age"() {
+    def "should #result drugs to the #age"() {
         given:
             def order = getOrder(
                     customer: getCustomer(dateOfBirth: dateOfBirth),
@@ -50,10 +70,9 @@ class DummyDataSeparation extends Specification implements OrderData {
             dateOfBirth || expectedStatus
             KID_DOB     || REJECTED
             ADULT_DOB   || ACCEPTED
-            age = isUnderAge(dateOfBirth) ? 'kid' : 'adult'
-            result = (expectedStatus == ACCEPTED) ? 'allow' : 'not allow'
+            age = isUnderAge(dateOfBirth) ? 'kids' : 'adults'
+            result = (expectedStatus == ACCEPTED) ? 'sell' : 'not sell'
     }
-
 
     private boolean isUnderAge(dateOfBirth) {
         Period.between(dateOfBirth, LocalDate.now()).years < 18
