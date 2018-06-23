@@ -1,13 +1,11 @@
-package com.dataart.spockframework.expressive.way.of.testing.examples.maps
+package com.dataart.spockframework.expressive.way.of.testing.examples.mocks
 
+import com.dataart.spockframework.expressive.way.of.testing.examples.fixtures.OrderData
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.*
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentStatus.ACCEPTED
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentType.BLIK
-import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentType.CARD
-import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentType.CASH
 
 class PaymentServiceSpec extends Specification implements OrderData {
 
@@ -70,40 +68,6 @@ class PaymentServiceSpec extends Specification implements OrderData {
             thrown RuntimeException
     }
 
-    def "should not throw exception"() {
-        given:
-            PaymentRepository repository = Mock(PaymentRepository)
-        when:
-            repository.find(UUID.randomUUID())
-        then:
-            noExceptionThrown()
-    }
-
-    def "should throw exception"() {
-        given:
-            PaymentRepository repository = Mock(PaymentRepository)
-            repository.find(_ as UUID) >> {
-                throw new RuntimeException("data source exception")
-            }
-        when:
-            repository.find(UUID.randomUUID())
-        then:
-            thrown(RuntimeException)
-    }
-
-    def "should verify thrown exception"() {
-        given:
-            PaymentRepository repository = Mock(PaymentRepository)
-            repository.find(_ as UUID) >> {
-                throw new RuntimeException("data source exception")
-            }
-        when:
-            repository.find(UUID.randomUUID())
-        then:
-            def ex = thrown(RuntimeException)
-            ex.message == "data source exception"
-    }
-
     def "should stub and verify repository mock"() {
         given:
             PaymentRepository repository = Mock(PaymentRepository)
@@ -120,44 +84,4 @@ class PaymentServiceSpec extends Specification implements OrderData {
             id == uuid
     }
 
-    @Unroll
-    def "should pay for order with #paymentType and store payment in repository"(PaymentType paymentType) {
-        given:
-            PaymentRepository repository = Mock(PaymentRepository)
-            PaymentService paymentService = new PaymentService(repository)
-            def order = getOrder(paymentType: paymentType)
-        when:
-            UUID id = paymentService.payForOrder(order)
-        then:
-            1 * repository.save(new Payment(100, ACCEPTED, paymentType))
-        where:
-            paymentType << PaymentType.findAll()
-    }
-
-    @Unroll
-    def "should pay for order with #paymentType and store payment in repository"() {
-        given:
-            def order = getOrder(paymentType: paymentType)
-        when:
-            UUID id = paymentService.payForOrder(order)
-        then:
-            repository.find(id).status == ACCEPTED
-        where:
-            paymentType << PaymentType.findAll()
-    }
-
-    @Unroll
-    def "should pay for order with #paymentType"() {
-        given:
-            def order = getOrder(paymentType: paymentType)
-        when:
-            UUID id = paymentService.payForOrder(order)
-        then:
-            repository.find(id).status == ACCEPTED
-        where:
-            paymentType | _
-            CASH        | _
-            CARD        | _
-            BLIK        | _
-    }
 }

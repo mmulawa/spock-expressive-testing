@@ -1,5 +1,6 @@
 package com.dataart.spockframework.expressive.way.of.testing.examples.maps
 
+import com.dataart.spockframework.expressive.way.of.testing.examples.fixtures.OrderData
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.InMemoryPaymentRepository
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Item
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Order

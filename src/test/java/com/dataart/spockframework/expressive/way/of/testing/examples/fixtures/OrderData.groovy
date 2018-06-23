@@ -1,4 +1,4 @@
-package com.dataart.spockframework.expressive.way.of.testing.examples.maps
+package com.dataart.spockframework.expressive.way.of.testing.examples.fixtures
 
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Address
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Customer
