@@ -7,6 +7,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.UUID;
 
+import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.ItemCategory.*;
+import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentStatus.ACCEPTED;
+import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentStatus.REJECTED;
+
 @Service
 public class PaymentService {
 
@@ -18,9 +22,9 @@ public class PaymentService {
     }
 
     public UUID payForOrder(Order order) {
-        PaymentStatus status = (isUnderage(order.getCustomer())
-                && order.getItems().stream().filter(item -> item.getCategory() == ItemCategory.MEDICINES).findAny().isPresent())
-                ? PaymentStatus.REJECTED : PaymentStatus.ACCEPTED;
+        PaymentStatus status = (isUnderage(order.getCustomer()) &&
+                order.getItems().stream().anyMatch(item -> item.getCategory() == MEDICINES)) ?
+                REJECTED : ACCEPTED;
         Payment payment = new Payment(order.getPrice(), status, order.getPaymentType());
         UUID paymentId = paymentRepository.save(payment);
         order.setPaymentId(paymentId);

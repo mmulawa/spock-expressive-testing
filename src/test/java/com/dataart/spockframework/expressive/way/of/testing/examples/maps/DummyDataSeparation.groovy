@@ -25,8 +25,10 @@ class DummyDataSeparation extends Specification implements OrderData {
 
     def "should not allow to pay for medicines to kid"() {
         given:
-            def order = getOrder([customer: getCustomer(dateOfBirth: KID_DOB),
-                                  items   : [getItem(category: MEDICINES)]])
+            def order = getOrder(
+                    customer: getCustomer(dateOfBirth: KID_DOB),
+                    items: [getItem(category: MEDICINES)]
+            )
         when:
             UUID id = paymentService.payForOrder(order)
         then:
@@ -36,8 +38,10 @@ class DummyDataSeparation extends Specification implements OrderData {
     @Unroll
     def "should #result to pay for medicines to #age"() {
         given:
-            def order = getOrder([customer: getCustomer(dateOfBirth: dateOfBirth),
-                                  items   : [getItem(category: MEDICINES)]])
+            def order = getOrder(
+                    customer: getCustomer(dateOfBirth: dateOfBirth),
+                    items: [getItem(category: MEDICINES)]
+            )
         when:
             UUID id = paymentService.payForOrder(order)
         then:
