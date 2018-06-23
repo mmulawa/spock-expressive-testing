@@ -1,36 +1,31 @@
 package com.dataart.spockframework.expressive.way.of.testing.examples.maps
 
+import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Item
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.ItemCategory
+import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Order
 import spock.lang.Specification
 
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.ItemCategory.HOME
 
 class LeftShiftMapOperatorSpec extends Specification {
 
-    def 'should modify item map with << operator'() {
+    def 'should construct order of given modified map'() {
         given:
-            def map = [category: HOME,
-                       name    : 'spoon']
-        expect:
-            map.name == 'spoon'
+            def map = [customer: [firstName: 'Jan',
+                                  address  : [city  : 'Lublin',
+                                              street: 'Królewska']],
+                       items   : [[name: 'Apple']] as Item[],
+                       price   : 100]
         when:
-            map << [name: 'knife']
+            map << [items: [[name: 'Pear'] as Item]]
+            map.customer << [address: [city  : 'Świdnik',
+                                       street: 'Aleja Lotników Polskich']]
+            def order = new Order(map)
         then:
-            map.name == 'knifesss'
-    }
-
-    def 'should modify items map with << operator'() {
-        given:
-            def map = [items: [[category: HOME,
-                                name    : 'spoon'],
-                               []]]
-        expect:
-            map.items[0].name == 'spoon'
-            map.items[0].category == HOME
-        when:
-            map.items[0] << [name: 'knife']
-        then:
-            map.items[0].name == 'knife'
-            map.items[0].category == HOME
+            order.customer.firstName == 'Jan'
+            order['customer']['address']['city'] == 'Świdnik'
+            order.customer.address.street == 'Aleja Lotników Polskich'
+            order.price == 100
+            order.items[0].name == 'Pear'
     }
 }

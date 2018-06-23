@@ -15,7 +15,7 @@ class GivenWhenThenWhereWithUnrollSpec extends Specification {
             def item = new Item(category, name, price)
         then:
             item.category == category
-            item.name == name + 'a'
+            item.name == name
             item.price == price
         where:
             category  | name      | price

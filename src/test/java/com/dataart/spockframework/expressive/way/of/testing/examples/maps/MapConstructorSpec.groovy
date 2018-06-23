@@ -1,7 +1,10 @@
 package com.dataart.spockframework.expressive.way.of.testing.examples.maps
 
+import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Item
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Order
 import spock.lang.Specification
+
+import java.time.LocalDate
 
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.ItemCategory.FOOD
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.ItemCategory.HOME
@@ -10,22 +13,24 @@ import static com.dataart.spockframework.expressive.way.of.testing.examples.shop
 
 class MapConstructorSpec extends Specification {
 
-
-    def 'should construct order and items of given map'() {
+    def 'should construct order of given map'() {
         given:
-            def map = [items: [[
-                                       category: FOOD,
-                                       name    : 'Item name',
-                                       price   : 200]],
-                       price: 100]
-        expect:
-            map instanceof LinkedHashMap
+            def map = [customer: [firstName: 'Jan',
+                                  address  : [city  : 'Lublin',
+                                              street: 'Królewska']],
+                       items   : [[name: 'Apple']] as Item[],
+                       price   : 100]
         when:
-            def order = new Order(map)
+            def explicit = new Order(map)
+            Order implicit = map
+            def explicitWithAs = map as Order
         then:
-            order.price == 100
-            order.items[0].category == FOOD
-            order.items[0].name == 'Item name'
-            order.items[0].price == 200
+            explicit == implicit
+            implicit == explicitWithAs
+            explicit.customer.firstName == 'Jan'
+            explicit['customer']['address']['city'] == 'Lublin'
+            explicit.customer.address.street == 'Królewska'
+            explicit.price == 100
+            explicit.items[0].name == 'Apple'
     }
 }

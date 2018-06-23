@@ -18,7 +18,8 @@ public class PaymentService {
     }
 
     public UUID payForOrder(Order order) {
-        PaymentStatus status = (isUnderage(order.getCustomer()) && order.getPaymentType().equals(PaymentType.CARD))
+        PaymentStatus status = (isUnderage(order.getCustomer())
+                && order.getItems().stream().filter(item -> item.getCategory() == ItemCategory.MEDICINES).findAny().isPresent())
                 ? PaymentStatus.REJECTED : PaymentStatus.ACCEPTED;
         Payment payment = new Payment(order.getPrice(), status, order.getPaymentType());
         UUID paymentId = paymentRepository.save(payment);
