@@ -50,6 +50,19 @@ class PaymentServiceSpec extends Specification implements OrderData {
             }
     }
 
+    def "should verify mock parameter #3"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            PaymentService paymentService = new PaymentService(repository)
+            def order = getOrder()
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            1 * repository.save(_ as Payment) >> { Payment payment ->
+                assert payment.status == ACCEPTED
+            }
+    }
+
     def "should stub return value"() {
         given:
             PaymentRepository repository = Mock(PaymentRepository)
@@ -91,9 +104,7 @@ class PaymentServiceSpec extends Specification implements OrderData {
         when:
             UUID id = paymentService.payForOrder(order)
         then:
-            1 * repository.save({ it.status == ACCEPTED }) >> { it ->
-                uuid
-            }
+            1 * repository.save({ it.status == ACCEPTED }) >> uuid
             id == uuid
     }
 
@@ -106,8 +117,8 @@ class PaymentServiceSpec extends Specification implements OrderData {
         when:
             UUID id = paymentService.payForOrder(order)
         then:
-            1 * repository.save(_ as Payment) >> { it ->
-                assert it[0].status == ACCEPTED
+            1 * repository.save({ it.status == ACCEPTED }) >> { Payment payment ->
+                assert payment.status == ACCEPTED
                 uuid
             }
             id == uuid
