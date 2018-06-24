@@ -34,7 +34,7 @@ class PaymentServiceSpec extends Specification implements OrderData {
             PaymentService paymentService = new PaymentService(repository)
             def order = getOrder()
         when:
-            UUID id = paymentService.payForOrder(order)
+            UUID result = paymentService.payForOrder(order)
         then:
             1 * repository.save({ it.status == ACCEPTED })
     }
@@ -45,7 +45,7 @@ class PaymentServiceSpec extends Specification implements OrderData {
             PaymentService paymentService = new PaymentService(repository)
             def order = getOrder()
         when:
-            UUID id = paymentService.payForOrder(order)
+            UUID result = paymentService.payForOrder(order)
         then:
             1 * repository.save(_ as Payment) >> { it ->
                 assert it[0].status == ACCEPTED
@@ -58,7 +58,7 @@ class PaymentServiceSpec extends Specification implements OrderData {
             PaymentService paymentService = new PaymentService(repository)
             def order = getOrder()
         when:
-            UUID id = paymentService.payForOrder(order)
+            UUID result = paymentService.payForOrder(order)
         then:
             1 * repository.save(_ as Payment) >> { Payment payment ->
                 assert payment.status == ACCEPTED
@@ -73,9 +73,9 @@ class PaymentServiceSpec extends Specification implements OrderData {
             PaymentService paymentService = new PaymentService(repository)
             def order = getOrder()
         when:
-            UUID id = paymentService.payForOrder(order)
+            UUID result = paymentService.payForOrder(order)
         then:
-            id == uuid
+            result == uuid
     }
 
     def "should stub with different value per invocation"() {
@@ -104,10 +104,10 @@ class PaymentServiceSpec extends Specification implements OrderData {
             def order = getOrder()
             def uuid = UUID.randomUUID()
         when:
-            UUID id = paymentService.payForOrder(order)
+            UUID result = paymentService.payForOrder(order)
         then:
             1 * repository.save({ it.status == ACCEPTED }) >> uuid
-            id == uuid
+            result == uuid
     }
 
     def "should stub and verify mock #2"() {
@@ -117,13 +117,13 @@ class PaymentServiceSpec extends Specification implements OrderData {
             def order = getOrder()
             def uuid = UUID.randomUUID()
         when:
-            UUID id = paymentService.payForOrder(order)
+            UUID result = paymentService.payForOrder(order)
         then:
             1 * repository.save({ it.status == ACCEPTED }) >> { Payment payment ->
                 assert payment.status == ACCEPTED
                 uuid
             }
-            id == uuid
+            result == uuid
     }
 
 }
