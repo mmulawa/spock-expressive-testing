@@ -33,7 +33,7 @@ class PaymentServiceSpec extends Specification implements OrderData {
             0 * _
     }
 
-    def "should verify mock parameter #1"() {
+    def "should verify mock parameter"() {
         given:
             PaymentRepository repository = Mock(PaymentRepository)
             PaymentService paymentService = new PaymentService(repository)
@@ -42,31 +42,12 @@ class PaymentServiceSpec extends Specification implements OrderData {
             paymentService.payForOrder(order)
         then:
             1 * repository.save({ it.status == ACCEPTED })
-    }
-
-    def "should verify mock parameter #2"() {
-        given:
-            PaymentRepository repository = Mock(PaymentRepository)
-            PaymentService paymentService = new PaymentService(repository)
-            def order = getOrder()
-        when:
-            paymentService.payForOrder(order)
-        then:
-            1 * repository.save(_ as Payment) >> { it ->
-                assert it[0].status == ACCEPTED
-            }
-    }
-
-    def "should verify mock parameter #3"() {
-        given:
-            PaymentRepository repository = Mock(PaymentRepository)
-            PaymentService paymentService = new PaymentService(repository)
-            def order = getOrder()
-        when:
-            paymentService.payForOrder(order)
-        then:
-            1 * repository.save(_ as Payment) >> { Payment payment ->
+            0 * repository.save({ it.status == ACCEPTED }, _ as String)
+            0 * repository.save(_) >> { Payment payment ->
                 assert payment.status == ACCEPTED
+            }
+            0 * repository.save(_) >> { it ->
+                assert it[0].status == ACCEPTED
             }
     }
 
