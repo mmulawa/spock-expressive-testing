@@ -5,9 +5,11 @@ import com.dataart.spockframework.expressive.way.of.testing.examples.shop.InMemo
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Payment
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentRepository
 import com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentService
+import com.sun.org.apache.regexp.internal.RE
 import spock.lang.Specification
 
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentStatus.ACCEPTED
+import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentStatus.REJECTED
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentType.BLIK
 
 class PaymentServiceSpec extends Specification implements OrderData {
@@ -95,7 +97,7 @@ class PaymentServiceSpec extends Specification implements OrderData {
             thrown RuntimeException
     }
 
-    def "should stub and verify repository mock #1"() {
+    def "should stub and verify mock #1"() {
         given:
             PaymentRepository repository = Mock(PaymentRepository)
             PaymentService paymentService = new PaymentService(repository)
@@ -108,7 +110,7 @@ class PaymentServiceSpec extends Specification implements OrderData {
             id == uuid
     }
 
-    def "should stub and verify repository mock #2"() {
+    def "should stub and verify mock #2"() {
         given:
             PaymentRepository repository = Mock(PaymentRepository)
             PaymentService paymentService = new PaymentService(repository)
