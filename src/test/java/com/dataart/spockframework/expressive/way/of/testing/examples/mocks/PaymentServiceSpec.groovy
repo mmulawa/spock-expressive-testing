@@ -1,7 +1,10 @@
 package com.dataart.spockframework.expressive.way.of.testing.examples.mocks
 
 import com.dataart.spockframework.expressive.way.of.testing.examples.fixtures.OrderData
-import com.dataart.spockframework.expressive.way.of.testing.examples.shop.*
+import com.dataart.spockframework.expressive.way.of.testing.examples.shop.InMemoryPaymentRepository
+import com.dataart.spockframework.expressive.way.of.testing.examples.shop.Payment
+import com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentRepository
+import com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentService
 import spock.lang.Specification
 
 import static com.dataart.spockframework.expressive.way.of.testing.examples.shop.PaymentStatus.ACCEPTED
@@ -23,7 +26,18 @@ class PaymentServiceSpec extends Specification implements OrderData {
             1 * repository.save(_ as Payment)
     }
 
-    def "should verify mock parameter"() {
+    def "should verify mock parameter #1"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            PaymentService paymentService = new PaymentService(repository)
+            def order = getOrder()
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            1 * repository.save({ it.status == ACCEPTED })
+    }
+
+    def "should verify mock parameter #2"() {
         given:
             PaymentRepository repository = Mock(PaymentRepository)
             PaymentService paymentService = new PaymentService(repository)
@@ -68,7 +82,22 @@ class PaymentServiceSpec extends Specification implements OrderData {
             thrown RuntimeException
     }
 
-    def "should stub and verify repository mock"() {
+    def "should stub and verify repository mock #1"() {
+        given:
+            PaymentRepository repository = Mock(PaymentRepository)
+            PaymentService paymentService = new PaymentService(repository)
+            def order = getOrder()
+            def uuid = UUID.randomUUID()
+        when:
+            UUID id = paymentService.payForOrder(order)
+        then:
+            1 * repository.save({ it.status == ACCEPTED }) >> { it ->
+                uuid
+            }
+            id == uuid
+    }
+
+    def "should stub and verify repository mock #2"() {
         given:
             PaymentRepository repository = Mock(PaymentRepository)
             PaymentService paymentService = new PaymentService(repository)
