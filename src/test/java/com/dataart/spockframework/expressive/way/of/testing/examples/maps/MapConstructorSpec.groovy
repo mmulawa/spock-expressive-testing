@@ -18,7 +18,7 @@ class MapConstructorSpec extends Specification {
             def map = [customer: [firstName: 'Jan',
                                   address  : [city  : 'Lublin',
                                               street: 'Królewska']],
-                       items   : [[name: 'Apple']] as Item[],
+                       items   : [[name: 'Apple'], [name: 'Plum']] as Item[],
                        price   : 100]
         when:
             def explicit = new Order(map)
@@ -32,5 +32,6 @@ class MapConstructorSpec extends Specification {
             explicit.customer.address.street == 'Królewska'
             explicit.price == 100
             explicit.items[0].name == 'Apple'
+            explicit.items.name == ['Apple', 'Plum']
     }
 }
